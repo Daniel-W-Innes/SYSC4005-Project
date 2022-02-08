@@ -1,3 +1,3 @@
-public interface Component {
+public interface Component extends Resource{
     Event process(Event event);
 }
