@@ -22,20 +22,20 @@ public class Orchestrator implements Runnable {
                     .map((event -> {
                         Set<ResourceID> acquired = new HashSet<>();
                         boolean canRun = true;
-                        for (ResourceID resourceID: event.requiredResource()) {
+                        for (ResourceID resourceID : event.requiredResource()) {
                             canRun = resources.get(resourceID).acquire();
-                            if (canRun){
+                            if (canRun) {
                                 acquired.add(resourceID);
                             } else {
                                 break;
                             }
                         }
-                        if (canRun){
+                        if (canRun) {
                             Event nextEvent = components.get(event.destination()).process(event);
                             nextEvent.producesResource().forEach(resourceID -> resources.get(resourceID).release());
                             return nextEvent;
-                        }else {
-                            acquired.forEach(resourceID ->  resources.get(resourceID).release());
+                        } else {
+                            acquired.forEach(resourceID -> resources.get(resourceID).release());
                             return event;
                         }
                     }))

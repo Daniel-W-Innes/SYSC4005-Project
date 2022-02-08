@@ -1,4 +1,4 @@
-public enum ResourceID{
+public enum ResourceID {
     INSPECTOR_1,
     INSPECTOR_2,
     WORKSTATION_1,
