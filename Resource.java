@@ -1,5 +1,5 @@
 public interface Resource {
-    boolean acquire();
+    boolean acquire(Distinguisher distinguisher);
 
     void release();
 }

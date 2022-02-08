@@ -7,7 +7,7 @@ public class Buffer implements Resource {
     }
 
     @Override
-    public synchronized boolean acquire() {
+    public synchronized boolean acquire(Distinguisher distinguisher) {
         if (space == 0) {
             return false;
         } else {

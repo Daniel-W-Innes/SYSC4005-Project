@@ -5,12 +5,12 @@ public abstract class Component implements Resource {
     private final AtomicBoolean busy = new AtomicBoolean(false);
 
     @Override
-    public synchronized boolean acquire() {
+    public boolean acquire(Distinguisher distinguisher) {
         return busy.compareAndSet(false, true);
     }
 
     @Override
-    public synchronized void release() {
+    public void release() {
         busy.set(false);
     }
 

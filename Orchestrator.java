@@ -23,7 +23,7 @@ public class Orchestrator implements Runnable {
                         Set<ResourceID> acquired = new HashSet<>();
                         boolean canRun = true;
                         for (ResourceID resourceID : event.requiredResource()) {
-                            canRun = resources.get(resourceID).acquire();
+                            canRun = resources.get(resourceID).acquire(event.distinguisher());
                             if (canRun) {
                                 acquired.add(resourceID);
                             } else {
