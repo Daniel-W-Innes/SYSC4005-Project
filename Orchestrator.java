@@ -31,15 +31,15 @@ public class Orchestrator implements Runnable {
                             }
                         }
                         if (canRun) {
-                            Event nextEvent = components.get(event.destination()).process(event);
-                            nextEvent.producesResource().forEach(resourceID -> resources.get(resourceID).release());
+                            Optional<Event> nextEvent = components.get(event.destination()).process(event);
+                            event.producesResource().forEach(resourceID -> resources.get(resourceID).release());
                             return nextEvent;
                         } else {
                             acquired.forEach(resourceID -> resources.get(resourceID).release());
-                            return event;
+                            return Optional.of(event);
                         }
                     }))
-                    .forEach(event -> {
+                    .forEach(optionalEvent -> optionalEvent.ifPresent(event -> {
                         if (!nextTime.contains(event.time())) {
                             nextTime.add(event.time());
                             futureEventList.put(event.time(), Set.of(event));
@@ -47,7 +47,7 @@ public class Orchestrator implements Runnable {
                         } else {
                             futureEventList.get(event.time()).add(event);
                         }
-                    });
+                    }));
         }
     }
 

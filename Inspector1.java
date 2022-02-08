@@ -16,13 +16,13 @@ public class Inspector1 extends Component {
     }
 
     @Override
-    public Event process(Event event) {
+    public Optional<Event> process(Event event) {
         if (event.eventType() == EventType.ARRIVAL) {
             nextComponentID = destination.poll();
-            return new Event(event.time() + generator.nextInt(MAX_DELAY), EventType.DEPARTURE, ComponentID.INSPECTOR_1, Set.of(buffers.get(nextComponentID)), Set.of(ResourceID.INSPECTOR_1), Distinguisher.C1);
+            return Optional.of(new Event(event.time() + generator.nextInt(MAX_DELAY), EventType.DEPARTURE, ComponentID.INSPECTOR_1, Set.of(buffers.get(nextComponentID)), Set.of(ResourceID.INSPECTOR_1), Distinguisher.C1));
         }
         Event nextEvent = new Event(event.time(), EventType.ARRIVAL, nextComponentID, Set.of(nextComponentID.getResourceID()), Set.of(buffers.get(nextComponentID)), Distinguisher.C1);
         destination.add(nextComponentID);
-        return nextEvent;
+        return Optional.of(nextEvent);
     }
 }

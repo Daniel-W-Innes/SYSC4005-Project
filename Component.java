@@ -1,3 +1,4 @@
+import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 public abstract class Component implements Resource {
@@ -13,5 +14,5 @@ public abstract class Component implements Resource {
         busy.set(false);
     }
 
-    abstract Event process(Event event);
+    abstract Optional<Event> process(Event event);
 }
