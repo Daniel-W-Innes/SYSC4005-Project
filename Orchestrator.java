@@ -29,21 +29,22 @@ public class Orchestrator implements Runnable {
 
     @Override
     public void run() {
-        boolean start = true;
-//        addEvent(new Event(0, EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1));
-//        addEvent(new Event(0, EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3));
+        addEvent(new Event(0, EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1));
+        addEvent(new Event(0, EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3));
         while (!stop) {
-            if (nextTimes.isEmpty() && !start)
+            if (nextTimes.isEmpty())
                 break;
-            start = false;
-            int nextTime = nextTimes.peek()==null? 0:nextTimes.poll();
-            if (components.get(ComponentID.INSPECTOR_1).free(Distinguisher.C1)) {
-                addEvent(new Event(nextTime, EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1));
+            int nextTime = nextTimes.peek();
+            for (Event event : futureEventList.get(nextTime)) {
+                if (event.eventType() == EventType.DEPARTURE) {
+                    if (event.destination() == ComponentID.INSPECTOR_1) {
+                        addEvent(new Event(nextTime, EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1));
+                    } else if (event.destination() == ComponentID.INSPECTOR_2) {
+                        addEvent(new Event(nextTime, EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3));
+                    }
+                }
             }
-            if (components.get(ComponentID.INSPECTOR_2).free(Distinguisher.C2)) {
-                addEvent(new Event(nextTime, EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3));
-            }
-            futureEventList.get(nextTime).parallelStream()
+            futureEventList.get(nextTimes.poll()).parallelStream()
                     .map((event -> {
                         Set<ResourceID> acquired = new HashSet<>();
                         boolean canRun = true;
