@@ -34,7 +34,7 @@ public class Orchestrator implements Runnable {
         while (!stop) {
             if (nextTimes.isEmpty())
                 break;
-            int nextTime = nextTimes.peek();
+            int nextTime = nextTimes.poll();
             for (Event event : futureEventList.get(nextTime)) {
                 if (event.eventType() == EventType.DEPARTURE) {
                     if (event.destination() == ComponentID.INSPECTOR_1) {
@@ -44,7 +44,7 @@ public class Orchestrator implements Runnable {
                     }
                 }
             }
-            futureEventList.get(nextTimes.poll()).parallelStream()
+            futureEventList.get(nextTime).parallelStream()
                     .map((event -> {
                         Set<ResourceID> acquired = new HashSet<>();
                         boolean canRun = true;
