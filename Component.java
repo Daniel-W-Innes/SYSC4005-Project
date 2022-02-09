@@ -6,7 +6,7 @@ public abstract class Component implements Resource {
 
     @Override
     public boolean free(Distinguisher distinguisher) {
-        return busy.get();
+        return !busy.get();
     }
 
     @Override

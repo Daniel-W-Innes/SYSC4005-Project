@@ -3,7 +3,7 @@ import java.util.*;
 public class Orchestrator implements Runnable {
     private final Random generator;
     private final Map<Integer, Set<Event>> futureEventList;
-    private final PriorityQueue<Integer> nextTime;
+    private final PriorityQueue<Integer> nextTimes;
     private final Map<ComponentID, Component> components;
     private final Map<ResourceID, Resource> resources;
     private boolean stop;
@@ -13,34 +13,37 @@ public class Orchestrator implements Runnable {
         this.components = components;
         this.resources = resources;
         futureEventList = new HashMap<>();
-        nextTime = new PriorityQueue<>();
+        nextTimes = new PriorityQueue<>();
         stop = false;
     }
 
     private void addEvent(Event event) {
-        if (!nextTime.contains(event.time())) {
-            nextTime.add(event.time());
+        if (!nextTimes.contains(event.time())) {
+            nextTimes.add(event.time());
             futureEventList.put(event.time(), new HashSet<>(Set.of(event)));
         } else {
             futureEventList.get(event.time()).add(event);
         }
+        System.out.println("added: " + event);
     }
 
     @Override
     public void run() {
-        addEvent(new Event(0, EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1));
-        addEvent(new Event(0, EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3));
-
+        boolean start = true;
+//        addEvent(new Event(0, EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1));
+//        addEvent(new Event(0, EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3));
         while (!stop) {
-            if (nextTime.isEmpty())
+            if (nextTimes.isEmpty() && !start)
                 break;
+            start = false;
+            int nextTime = nextTimes.peek()==null? 0:nextTimes.poll();
             if (components.get(ComponentID.INSPECTOR_1).free(Distinguisher.C1)) {
-                addEvent(new Event(nextTime.peek(), EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1));
+                addEvent(new Event(nextTime, EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1));
             }
             if (components.get(ComponentID.INSPECTOR_2).free(Distinguisher.C2)) {
-                addEvent(new Event(nextTime.peek(), EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3));
+                addEvent(new Event(nextTime, EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3));
             }
-            futureEventList.get(nextTime.poll()).parallelStream()
+            futureEventList.get(nextTime).parallelStream()
                     .map((event -> {
                         Set<ResourceID> acquired = new HashSet<>();
                         boolean canRun = true;
@@ -54,7 +57,7 @@ public class Orchestrator implements Runnable {
                         }
                         if (canRun) {
                             Optional<Event> nextEvent = components.get(event.destination()).process(event);
-                            System.out.println(event);
+                            System.out.println("processed: " + event);
                             event.producesResource().forEach(resourceID -> resources.get(resourceID).release());
                             return nextEvent;
                         } else {
