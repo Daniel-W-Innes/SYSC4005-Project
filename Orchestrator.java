@@ -18,7 +18,7 @@ public class Orchestrator implements Runnable {
     }
 
     private void addEvent(Event event) {
-        if (!nextTimes.contains(event.time())) {
+        if (!futureEventList.containsKey(event.time())) {
             nextTimes.add(event.time());
             futureEventList.put(event.time(), new HashSet<>(Set.of(event)));
         } else {
