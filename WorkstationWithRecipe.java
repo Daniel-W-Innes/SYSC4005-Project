@@ -28,6 +28,12 @@ public class WorkstationWithRecipe extends Component {
     }
 
     @Override
+    public synchronized boolean free(Distinguisher distinguisher) {
+        return !hasDistinguisher.contains(distinguisher);
+    }
+
+
+    @Override
     public synchronized boolean acquire(Distinguisher distinguisher) {
         if (hasDistinguisher.contains(distinguisher)) {
             return false;

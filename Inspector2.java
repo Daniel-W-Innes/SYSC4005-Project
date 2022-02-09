@@ -16,7 +16,7 @@ public class Inspector2 extends Component {
     public Optional<Event> process(Event event) {
         ResourceID bufferID = event.distinguisher() == Distinguisher.C2 ? ResourceID.BUFFER_3 : ResourceID.BUFFER_5;
         if (event.eventType() == EventType.ARRIVAL) {
-            return Optional.of(new Event(event.time() + generator.nextInt(MAX_DELAY), EventType.DEPARTURE, ComponentID.INSPECTOR_1, Set.of(bufferID), Set.of(ResourceID.INSPECTOR_2), event.distinguisher()));
+            return Optional.of(new Event(event.time() + generator.nextInt(MAX_DELAY), EventType.DEPARTURE, ComponentID.INSPECTOR_2, Set.of(bufferID), Set.of(ResourceID.INSPECTOR_2), event.distinguisher()));
         }
         ComponentID nextComponentID = event.distinguisher() == Distinguisher.C2 ? ComponentID.WORKSTATION_2 : ComponentID.WORKSTATION_3;
         return Optional.of(new Event(event.time(), EventType.ARRIVAL, nextComponentID, Set.of(nextComponentID.getResourceID()), Set.of(buffers.get(nextComponentID)), event.distinguisher()));

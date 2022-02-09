@@ -7,6 +7,11 @@ public class Buffer implements Resource {
     }
 
     @Override
+    public synchronized boolean free(Distinguisher distinguisher) {
+        return space != 0;
+    }
+
+    @Override
     public synchronized boolean acquire(Distinguisher distinguisher) {
         if (space == 0) {
             return false;
