@@ -59,6 +59,8 @@ return true
 Orchestrator -> Workstation2 ++: process
 Workstation2 -> Event **: Workstation2 departure
 return event
+Orchestrator -> Buffer2 ++: release
+return true
 Orchestrator -> Workstation2 ++: process
 return
 Orchestrator -> Workstation2 ++: release
