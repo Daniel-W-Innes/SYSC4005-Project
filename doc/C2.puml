@@ -1,0 +1,68 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+participant Main
+participant Orchestrator
+participant Event
+participant Inspector2
+participant Buffer3
+participant Workstation2
+participant Inspector1
+participant Buffer2
+
+== Initialization ==
+Main -> Inspector2 **
+Main -> Buffer3 **
+Main -> Workstation2 **
+Main -> Inspector1 **
+Main -> Buffer2 **
+Main -> Orchestrator **
+== C2 ==
+Main -> Orchestrator ++
+Orchestrator -> Event **: Inspector2 arrival
+Orchestrator -> Inspector2 ++: acquire
+return true
+Orchestrator -> Inspector2 ++: process
+Inspector2 -> Event **: Inspector2 departure
+return event
+Orchestrator -> Buffer3 ++: acquire
+return true
+Orchestrator -> Inspector2 ++: process
+Inspector2 -> Event **: Workstation2 arrival
+return event
+Orchestrator -> Inspector2 ++: release
+return
+Orchestrator -> Workstation2 ++: acquire
+return true
+Orchestrator -> Workstation2 ++: process
+return
+Orchestrator -> Buffer3 ++: release
+return
+== C1 ==
+Orchestrator -> Event **: Inspector1 arrival
+Orchestrator -> Inspector1 ++: acquire
+return true
+Orchestrator -> Inspector1 ++: process
+Inspector1 -> Event **: Inspector1 departure
+return event
+Orchestrator -> Buffer2 ++: acquire
+return true
+Orchestrator -> Inspector1 ++: process
+Inspector1 -> Event **: Workstation2 arrival
+return event
+Orchestrator -> Inspector1 ++: release
+return
+== P2 ==
+Orchestrator -> Workstation2 ++: acquire
+return true
+Orchestrator -> Workstation2 ++: process
+Workstation2 -> Event **: Workstation2 departure
+return event
+Orchestrator -> Workstation2 ++: process
+return
+Orchestrator -> Workstation2 ++: release
+return
+return
+
+@enduml

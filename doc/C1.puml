@@ -1,0 +1,45 @@
+@startuml
+'https://plantuml.com/sequence-diagram
+
+autonumber
+participant Main
+participant Orchestrator
+participant Event
+participant Inspector1
+participant Buffer1
+participant Workstation1
+
+== Initialization ==
+Main -> Inspector1 **
+Main -> Buffer1 **
+Main -> Workstation1 **
+Main -> Orchestrator **
+== C1 ==
+Main -> Orchestrator ++
+Orchestrator -> Event **: Inspector1 arrival
+Orchestrator -> Inspector1 ++: acquire
+return true
+Orchestrator -> Inspector1 ++: process
+Inspector1 -> Event **: Inspector1 departure
+return event
+Orchestrator -> Buffer1 ++: acquire
+return true
+Orchestrator -> Inspector1 ++: process
+Inspector1 -> Event **: Workstation1 arrival
+return event
+Orchestrator -> Inspector1 ++: release
+return
+Orchestrator -> Workstation1 ++: acquire
+return true
+Orchestrator -> Workstation1 ++: process
+Workstation1 -> Event **: Workstation1 departure
+return event
+Orchestrator -> Buffer1 ++: release
+return
+Orchestrator -> Workstation1 ++: process
+return
+Orchestrator -> Workstation1 ++: release
+return
+return
+
+@enduml
