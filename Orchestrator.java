@@ -25,7 +25,7 @@ public class Orchestrator implements Runnable {
                 break;
             Event event = futureEventList.peek();
             System.out.println("checking: " + event);
-            if (event.eventType() == EventType.DEPARTURE) {
+            if (event.eventType() == EventType.DEPARTURE && !event.fudged()) {
                 if (event.destination() == ComponentID.INSPECTOR_1) {
                     futureEventList.add(new Event(event.time(), EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1));
                 } else if (event.destination() == ComponentID.INSPECTOR_2) {
