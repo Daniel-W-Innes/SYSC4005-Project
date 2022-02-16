@@ -24,6 +24,7 @@ public class Orchestrator implements Runnable {
             if (futureEventList.isEmpty())
                 break;
             Event event = futureEventList.peek();
+            System.out.println("checking: " + event);
             if (event.eventType() == EventType.DEPARTURE) {
                 if (event.destination() == ComponentID.INSPECTOR_1) {
                     futureEventList.add(new Event(event.time(), EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1));
@@ -33,6 +34,7 @@ public class Orchestrator implements Runnable {
 
             }
             event = futureEventList.poll();
+            System.out.println("processing: " + event);
             if (event == null)
                 break;
             Set<ResourceID> acquired = new HashSet<>();
@@ -49,9 +51,9 @@ public class Orchestrator implements Runnable {
                 components.get(event.destination()).process(event).ifPresent(futureEventList::add);
                 System.out.println("processed: " + event);
                 event.producesResource().forEach(resourceID -> resources.get(resourceID).release());
-
             } else {
                 acquired.forEach(resourceID -> resources.get(resourceID).release());
+                event.fudge();
                 futureEventList.add(event);
             }
         }
