@@ -1,3 +1,10 @@
+package controller.component;
+
+import model.Distinguisher;
+import model.Event;
+import model.EventType;
+import model.ResourceID;
+
 import java.util.HashSet;
 import java.util.Optional;
 import java.util.Random;
@@ -20,7 +27,7 @@ public class WorkstationWithRecipe extends Component {
     }
 
     @Override
-    synchronized Optional<Event> process(Event event) {
+    public synchronized Optional<Event> process(Event event) {
         if (event.eventType() == EventType.ARRIVAL && hasDistinguisher.containsAll(recipe)) {
             return Optional.of(new Event(event.time() + generator.nextInt(MAX_DELAY), EventType.DEPARTURE, event.destination(), Set.of(), Set.of(resourceID), output));
         }

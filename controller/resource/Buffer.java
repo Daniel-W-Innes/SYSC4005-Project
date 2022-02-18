@@ -1,3 +1,7 @@
+package controller.resource;
+
+import model.Distinguisher;
+
 public class Buffer implements Resource {
     private static final int CAPACITY = 2;
     private int space;

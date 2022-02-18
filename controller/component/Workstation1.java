@@ -1,3 +1,10 @@
+package controller.component;
+
+import model.Distinguisher;
+import model.Event;
+import model.EventType;
+import model.ResourceID;
+
 import java.util.Optional;
 import java.util.Random;
 import java.util.Set;
@@ -11,7 +18,7 @@ public class Workstation1 extends Component {
     }
 
     @Override
-    Optional<Event> process(Event event) {
+    public Optional<Event> process(Event event) {
         if (event.eventType() == EventType.ARRIVAL) {
             return Optional.of(new Event(event.time() + generator.nextInt(MAX_DELAY), EventType.DEPARTURE, event.destination(), Set.of(), Set.of(ResourceID.WORKSTATION_1), Distinguisher.P1));
         }

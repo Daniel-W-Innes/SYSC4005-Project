@@ -1,3 +1,11 @@
+import controller.Orchestrator;
+import controller.component.*;
+import controller.resource.Buffer;
+import controller.resource.Resource;
+import model.ComponentID;
+import model.Distinguisher;
+import model.ResourceID;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;

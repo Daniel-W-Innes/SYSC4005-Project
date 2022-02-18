@@ -1,3 +1,5 @@
+package model;
+
 public enum ResourceID {
     INSPECTOR_1,
     INSPECTOR_2,

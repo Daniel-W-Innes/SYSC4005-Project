@@ -1,3 +1,7 @@
+package controller.component;
+
+import model.*;
+
 import java.util.*;
 
 public class Inspector1 extends Component {

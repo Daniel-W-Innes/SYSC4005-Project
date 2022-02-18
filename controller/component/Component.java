@@ -1,3 +1,9 @@
+package controller.component;
+
+import controller.resource.Resource;
+import model.Distinguisher;
+import model.Event;
+
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -14,5 +20,5 @@ public abstract class Component implements Resource {
         busy.set(false);
     }
 
-    abstract Optional<Event> process(Event event);
+    public abstract Optional<Event> process(Event event);
 }

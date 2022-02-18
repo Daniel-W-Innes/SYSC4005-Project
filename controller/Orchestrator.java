@@ -1,3 +1,9 @@
+package controller;
+
+import controller.component.Component;
+import controller.resource.Resource;
+import model.*;
+
 import java.util.*;
 
 public class Orchestrator implements Runnable {

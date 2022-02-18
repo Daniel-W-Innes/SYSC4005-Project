@@ -1,3 +1,5 @@
+package model;
+
 import java.util.Objects;
 import java.util.Set;
 
@@ -107,13 +109,13 @@ public final class Event implements Comparable<Event> {
 
     @Override
     public String toString() {
-        return "Event[" +
+        return "model.Event[" +
                 "time=" + time + ", " +
                 "eventType=" + eventType + ", " +
                 "destination=" + destination + ", " +
                 "requiredResource=" + requiredResource + ", " +
                 "producesResource=" + producesResource + ", " +
-                "distinguisher=" + distinguisher +", " +
-                "fudged=" + fudged +']';
+                "distinguisher=" + distinguisher + ", " +
+                "fudged=" + fudged + ']';
     }
 }
