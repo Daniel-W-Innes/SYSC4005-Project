@@ -11,7 +11,7 @@ import java.util.Random;
 import java.util.Set;
 
 public class WorkstationWithRecipe extends Component {
-    private static final int MAX_DELAY = 5;
+    private static final int MAX_DELAY = 10;
     private final Random generator;
     private final Set<Distinguisher> hasDistinguisher;
     private final Set<Distinguisher> recipe;

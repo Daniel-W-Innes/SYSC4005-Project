@@ -11,6 +11,7 @@ public final class Event implements Comparable<Event> {
     private final Distinguisher distinguisher;
     private int time;
     private boolean fudged;
+    private int timeFudged;
 
     public Event(int time, EventType eventType, ComponentID destination, Set<ResourceID> requiredResource,
                  Set<ResourceID> producesResource, Distinguisher distinguisher, boolean fudged) {
@@ -21,6 +22,7 @@ public final class Event implements Comparable<Event> {
         this.producesResource = producesResource;
         this.distinguisher = distinguisher;
         this.fudged = fudged;
+        timeFudged = 0;
     }
 
     public Event(int time, EventType eventType, ComponentID destination, Set<ResourceID> requiredResource,
@@ -82,10 +84,21 @@ public final class Event implements Comparable<Event> {
     public void fudge() {
         if (fudged) {
             time++;
+            timeFudged++;
             fudged = false;
         } else {
             fudged = true;
         }
+    }
+    public int getTimeFudged() {
+        return timeFudged;
+    }
+    public static String toHead() {
+        return "time,type,destination,distinguisher" + "\n";
+    }
+
+    public String toCSV() {
+        return time + "," + eventType + "," + destination + "," + distinguisher + "\n";
     }
 
     @Override
@@ -117,9 +130,5 @@ public final class Event implements Comparable<Event> {
                 "producesResource=" + producesResource + ", " +
                 "distinguisher=" + distinguisher + ", " +
                 "fudged=" + fudged + ']';
-    }
-
-    public String toCSV() {
-        return time + ", " + eventType + ", " + destination + ", " + distinguisher  +"\n";
     }
 }
