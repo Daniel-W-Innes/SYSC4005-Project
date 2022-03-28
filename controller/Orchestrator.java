@@ -4,6 +4,8 @@ import controller.component.Component;
 import controller.resource.Resource;
 import model.*;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class Orchestrator implements Runnable {
@@ -26,42 +28,48 @@ public class Orchestrator implements Runnable {
     public void run() {
         futureEventList.add(new Event(0, EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1));
         futureEventList.add(new Event(0, EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3));
-        while (!stop) {
-            if (futureEventList.isEmpty())
-                break;
-            Event event = futureEventList.peek();
-            System.out.println("checking: " + event);
-            if (event.eventType() == EventType.DEPARTURE) {
-                if (event.destination() == ComponentID.INSPECTOR_1 && futureEventList.parallelStream().noneMatch(event1 -> event1.destination() == ComponentID.INSPECTOR_1 && event1.eventType() == EventType.ARRIVAL)) {
-                    futureEventList.add(new Event(event.time(), EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1, event.fudged()));
-                } else if (event.destination() == ComponentID.INSPECTOR_2 && futureEventList.parallelStream().noneMatch(event1 -> event1.destination() == ComponentID.INSPECTOR_2 && event1.eventType() == EventType.ARRIVAL)) {
-                    futureEventList.add(new Event(event.time(), EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3, event.fudged()));
-                }
-            }
-            event = futureEventList.poll();
-            System.out.println("processing: " + event);
-            if (event == null)
-                break;
-            Set<ResourceID> acquired = new HashSet<>();
-            boolean canRun = true;
-            for (ResourceID resourceID : event.requiredResource()) {
-                canRun = resources.get(resourceID).acquire(event.distinguisher());
-                if (canRun) {
-                    acquired.add(resourceID);
-                } else {
+
+        try (FileWriter f = new FileWriter("output.csv")){
+            while (!stop) {
+                if (futureEventList.isEmpty())
                     break;
+                Event event = futureEventList.peek();
+                System.out.println("checking: " + event);
+                if (event.eventType() == EventType.DEPARTURE) {
+                    if (event.destination() == ComponentID.INSPECTOR_1 && futureEventList.parallelStream().noneMatch(event1 -> event1.destination() == ComponentID.INSPECTOR_1 && event1.eventType() == EventType.ARRIVAL)) {
+                        futureEventList.add(new Event(event.time(), EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1, event.fudged()));
+                    } else if (event.destination() == ComponentID.INSPECTOR_2 && futureEventList.parallelStream().noneMatch(event1 -> event1.destination() == ComponentID.INSPECTOR_2 && event1.eventType() == EventType.ARRIVAL)) {
+                        futureEventList.add(new Event(event.time(), EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3, event.fudged()));
+                    }
                 }
+                event = futureEventList.poll();
+                System.out.println("processing: " + event);
+                if (event == null)
+                    break;
+                Set<ResourceID> acquired = new HashSet<>();
+                boolean canRun = true;
+                for (ResourceID resourceID : event.requiredResource()) {
+                    canRun = resources.get(resourceID).acquire(event.distinguisher());
+                    if (canRun) {
+                        acquired.add(resourceID);
+                    } else {
+                        break;
+                    }
+                }
+                if (canRun) {
+                    components.get(event.destination()).process(event).ifPresent(futureEventList::add);
+                    f.write(event.toCSV());
+                    System.out.println("processed: " + event);
+                    event.producesResource().forEach(resourceID -> resources.get(resourceID).release());
+                } else {
+                    acquired.forEach(resourceID -> resources.get(resourceID).release());
+                    event.fudge();
+                    futureEventList.add(event);
+                }
+                Assertions.checkBuffers(resources, futureEventList);
             }
-            if (canRun) {
-                components.get(event.destination()).process(event).ifPresent(futureEventList::add);
-                System.out.println("processed: " + event);
-                event.producesResource().forEach(resourceID -> resources.get(resourceID).release());
-            } else {
-                acquired.forEach(resourceID -> resources.get(resourceID).release());
-                event.fudge();
-                futureEventList.add(event);
-            }
-            Assertions.checkBuffers(resources, futureEventList);
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

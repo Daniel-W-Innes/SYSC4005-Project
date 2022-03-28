@@ -118,4 +118,8 @@ public final class Event implements Comparable<Event> {
                 "distinguisher=" + distinguisher + ", " +
                 "fudged=" + fudged + ']';
     }
+
+    public String toCSV() {
+        return time + ", " + eventType + ", " + destination + ", " + distinguisher  +"\n";
+    }
 }

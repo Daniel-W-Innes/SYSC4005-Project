@@ -24,3 +24,7 @@ hs_err_pid*
 
 .idea/
 /out/
+
+output.csv
+
+SYSC4005-Project.iml
