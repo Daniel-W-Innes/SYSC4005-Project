@@ -3,11 +3,15 @@ package controller.resource;
 import model.Distinguisher;
 
 public class Buffer implements Resource {
-    private static final int CAPACITY = 2;
-    public int space;
+    public static final int CAPACITY = 2;
+    private int space;
 
     public Buffer() {
         space = CAPACITY;
+    }
+
+    public int getSpace() {
+        return space;
     }
 
     @Override

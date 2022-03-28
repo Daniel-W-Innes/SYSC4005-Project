@@ -57,13 +57,7 @@ public class Orchestrator implements Runnable {
                 components.get(event.destination()).process(event).ifPresent(futureEventList::add);
                 System.out.println("processed: " + event);
                 event.producesResource().forEach(resourceID -> resources.get(resourceID).release());
-                int i =
-                        4 - (((Buffer) resources.get(ResourceID.BUFFER_3)).space + ((Buffer) resources.get(ResourceID.BUFFER_5)).space);
-                long j =
-                        futureEventList.parallelStream().filter(event1->(event1.destination() == ComponentID.WORKSTATION_2 || event1.destination() == ComponentID.WORKSTATION_3) && event1.eventType() == EventType.ARRIVAL).count();
-                if (i != (int) j) {
-                    System.out.println("wtf rip");
-                }
+                Assertions.checkBuffers(resources,futureEventList);
             } else {
                 acquired.forEach(resourceID -> resources.get(resourceID).release());
                 event.fudge();
