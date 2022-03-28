@@ -32,9 +32,9 @@ public class Orchestrator implements Runnable {
             Event event = futureEventList.peek();
             System.out.println("checking: " + event);
             if (event.eventType() == EventType.DEPARTURE ) {
-                if (event.destination() == ComponentID.INSPECTOR_1) {
+                if (event.destination() == ComponentID.INSPECTOR_1 && futureEventList.parallelStream().noneMatch(event1->event1.destination() == ComponentID.INSPECTOR_1 && event1.eventType() == EventType.ARRIVAL)) {
                     futureEventList.add(new Event(event.time(), EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1,event.fudged()));
-                } else if (event.destination() == ComponentID.INSPECTOR_2) {
+                } else if (event.destination() == ComponentID.INSPECTOR_2 && futureEventList.parallelStream().noneMatch(event1->event1.destination() == ComponentID.INSPECTOR_2 && event1.eventType() == EventType.ARRIVAL)) {
                     futureEventList.add(new Event(event.time(), EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3,event.fudged()));
                 }
 
