@@ -10,13 +10,13 @@ import java.util.Set;
 
 public class Assertions {
 
-    public static void checkBuffers(Map<ResourceID, Resource> resources, PriorityQueue<Event> futureEventList){
-        Set.of(ResourceID.BUFFER_1,ResourceID.BUFFER_2,ResourceID.BUFFER_3,ResourceID.BUFFER_4,ResourceID.BUFFER_5)
-                .parallelStream().forEach(resourceID -> checkBuffer(resourceID,resources,futureEventList));
+    public static void checkBuffers(Map<ResourceID, Resource> resources, PriorityQueue<Event> futureEventList) {
+        Set.of(ResourceID.BUFFER_1, ResourceID.BUFFER_2, ResourceID.BUFFER_3, ResourceID.BUFFER_4, ResourceID.BUFFER_5)
+                .parallelStream().forEach(resourceID -> checkBuffer(resourceID, resources, futureEventList));
     }
+
     public static void checkBuffer(ResourceID resourceID, Map<ResourceID, Resource> resources, PriorityQueue<Event> futureEventList) {
         Buffer buffer = ((Buffer) resources.get(resourceID));
-        int i = Buffer.CAPACITY - buffer.getSpace();
         ComponentID componentID;
         Distinguisher distinguisher;
         switch (resourceID) {
@@ -44,6 +44,6 @@ public class Assertions {
         int j = (int) futureEventList.parallelStream().filter(event1 ->
                 event1.destination() == componentID && event1.eventType() == EventType.ARRIVAL
                         && event1.distinguisher() == distinguisher).count();
-        assert i == j: "Missing items from event queue";
+        assert buffer.size() == j : "Missing items from event queue";
     }
 }

@@ -4,12 +4,12 @@ import java.util.Objects;
 import java.util.Set;
 
 public final class Event implements Comparable<Event> {
-    private int time;
     private final EventType eventType;
     private final ComponentID destination;
     private final Set<ResourceID> requiredResource;
     private final Set<ResourceID> producesResource;
     private final Distinguisher distinguisher;
+    private int time;
     private boolean fudged;
 
     public Event(int time, EventType eventType, ComponentID destination, Set<ResourceID> requiredResource,
@@ -25,7 +25,7 @@ public final class Event implements Comparable<Event> {
 
     public Event(int time, EventType eventType, ComponentID destination, Set<ResourceID> requiredResource,
                  Set<ResourceID> producesResource, Distinguisher distinguisher) {
-        this(time,eventType,destination,requiredResource,producesResource,distinguisher,false);
+        this(time, eventType, destination, requiredResource, producesResource, distinguisher, false);
     }
 
     @Override
@@ -34,10 +34,10 @@ public final class Event implements Comparable<Event> {
         if (compare != 0) {
             return compare;
         }
-        if (!fudged && o.fudged ){
+        if (!fudged && o.fudged) {
             return -1;
         }
-        if (!o.fudged && fudged){
+        if (!o.fudged && fudged) {
             return 1;
         }
         compare = destination.processBefore(o.destination);
@@ -80,10 +80,10 @@ public final class Event implements Comparable<Event> {
     }
 
     public void fudge() {
-        if (fudged){
+        if (fudged) {
             time++;
             fudged = false;
-        }else {
+        } else {
             fudged = true;
         }
     }

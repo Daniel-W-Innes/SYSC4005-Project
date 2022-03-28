@@ -1,7 +1,6 @@
 package controller;
 
 import controller.component.Component;
-import controller.resource.Buffer;
 import controller.resource.Resource;
 import model.*;
 
@@ -32,11 +31,11 @@ public class Orchestrator implements Runnable {
                 break;
             Event event = futureEventList.peek();
             System.out.println("checking: " + event);
-            if (event.eventType() == EventType.DEPARTURE ) {
-                if (event.destination() == ComponentID.INSPECTOR_1 && futureEventList.parallelStream().noneMatch(event1->event1.destination() == ComponentID.INSPECTOR_1 && event1.eventType() == EventType.ARRIVAL)) {
-                    futureEventList.add(new Event(event.time(), EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1,event.fudged()));
-                } else if (event.destination() == ComponentID.INSPECTOR_2 && futureEventList.parallelStream().noneMatch(event1->event1.destination() == ComponentID.INSPECTOR_2 && event1.eventType() == EventType.ARRIVAL)) {
-                    futureEventList.add(new Event(event.time(), EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3,event.fudged()));
+            if (event.eventType() == EventType.DEPARTURE) {
+                if (event.destination() == ComponentID.INSPECTOR_1 && futureEventList.parallelStream().noneMatch(event1 -> event1.destination() == ComponentID.INSPECTOR_1 && event1.eventType() == EventType.ARRIVAL)) {
+                    futureEventList.add(new Event(event.time(), EventType.ARRIVAL, ComponentID.INSPECTOR_1, Set.of(ResourceID.INSPECTOR_1), Set.of(), Distinguisher.C1, event.fudged()));
+                } else if (event.destination() == ComponentID.INSPECTOR_2 && futureEventList.parallelStream().noneMatch(event1 -> event1.destination() == ComponentID.INSPECTOR_2 && event1.eventType() == EventType.ARRIVAL)) {
+                    futureEventList.add(new Event(event.time(), EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3, event.fudged()));
                 }
             }
             event = futureEventList.poll();
@@ -57,12 +56,12 @@ public class Orchestrator implements Runnable {
                 components.get(event.destination()).process(event).ifPresent(futureEventList::add);
                 System.out.println("processed: " + event);
                 event.producesResource().forEach(resourceID -> resources.get(resourceID).release());
-                Assertions.checkBuffers(resources,futureEventList);
             } else {
                 acquired.forEach(resourceID -> resources.get(resourceID).release());
                 event.fudge();
                 futureEventList.add(event);
             }
+            Assertions.checkBuffers(resources, futureEventList);
         }
     }
 
