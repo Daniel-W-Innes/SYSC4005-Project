@@ -13,13 +13,12 @@ import java.util.Set;
 
 public class Main {
     public static void main(String[] args) {
-        Random generator = new Random(1);
         Map<ResourceID, Resource> resources = Map.of(
-                ResourceID.INSPECTOR_1, new Inspector1(generator),
-                ResourceID.INSPECTOR_2, new Inspector2(generator),
-                ResourceID.WORKSTATION_1, new Workstation1(generator),
-                ResourceID.WORKSTATION_2, new WorkstationWithRecipe(generator, Set.of(Distinguisher.C1, Distinguisher.C2), ResourceID.WORKSTATION_2, Distinguisher.P2),
-                ResourceID.WORKSTATION_3, new WorkstationWithRecipe(generator, Set.of(Distinguisher.C1, Distinguisher.C3), ResourceID.WORKSTATION_3, Distinguisher.P3),
+                ResourceID.INSPECTOR_1, new Inspector1( new Random(1)),
+                ResourceID.INSPECTOR_2, new Inspector2( new Random(1)),
+                ResourceID.WORKSTATION_1, new Workstation1( new Random(1)),
+                ResourceID.WORKSTATION_2, new WorkstationWithRecipe( new Random(1), Set.of(Distinguisher.C1, Distinguisher.C2), ResourceID.WORKSTATION_2, Distinguisher.P2),
+                ResourceID.WORKSTATION_3, new WorkstationWithRecipe( new Random(1), Set.of(Distinguisher.C1, Distinguisher.C3), ResourceID.WORKSTATION_3, Distinguisher.P3),
                 ResourceID.BUFFER_1, new Buffer(),
                 ResourceID.BUFFER_2, new Buffer(),
                 ResourceID.BUFFER_3, new Buffer(),
@@ -30,7 +29,7 @@ public class Main {
         for (ComponentID componentID : ComponentID.values()) {
             components.put(componentID, (Component) resources.get(componentID.getResourceID()));
         }
-        Orchestrator orchestrator = new Orchestrator(generator, components, resources);
+        Orchestrator orchestrator = new Orchestrator( new Random(1), components, resources);
         orchestrator.run();
     }
 }
