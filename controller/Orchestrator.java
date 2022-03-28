@@ -1,6 +1,7 @@
 package controller;
 
 import controller.component.Component;
+import controller.resource.Buffer;
 import controller.resource.Resource;
 import model.*;
 
@@ -37,7 +38,6 @@ public class Orchestrator implements Runnable {
                 } else if (event.destination() == ComponentID.INSPECTOR_2 && futureEventList.parallelStream().noneMatch(event1->event1.destination() == ComponentID.INSPECTOR_2 && event1.eventType() == EventType.ARRIVAL)) {
                     futureEventList.add(new Event(event.time(), EventType.ARRIVAL, ComponentID.INSPECTOR_2, Set.of(ResourceID.INSPECTOR_2), Set.of(), generator.nextBoolean() ? Distinguisher.C2 : Distinguisher.C3,event.fudged()));
                 }
-
             }
             event = futureEventList.poll();
             System.out.println("processing: " + event);
@@ -57,6 +57,13 @@ public class Orchestrator implements Runnable {
                 components.get(event.destination()).process(event).ifPresent(futureEventList::add);
                 System.out.println("processed: " + event);
                 event.producesResource().forEach(resourceID -> resources.get(resourceID).release());
+                int i =
+                        4 - (((Buffer) resources.get(ResourceID.BUFFER_3)).space + ((Buffer) resources.get(ResourceID.BUFFER_5)).space);
+                long j =
+                        futureEventList.parallelStream().filter(event1->(event1.destination() == ComponentID.WORKSTATION_2 || event1.destination() == ComponentID.WORKSTATION_3) && event1.eventType() == EventType.ARRIVAL).count();
+                if (i != (int) j) {
+                    System.out.println("wtf rip");
+                }
             } else {
                 acquired.forEach(resourceID -> resources.get(resourceID).release());
                 event.fudge();
