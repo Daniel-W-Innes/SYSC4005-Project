@@ -9,18 +9,15 @@ import java.util.Set;
 public class Inspector2 extends Component {
     private static final int MAX_DELAY = 5;
     private final Random generator;
-
     public Inspector2(Random generator) {
         this.generator = generator;
     }
 
     @Override
     public Optional<Event> process(Event event) {
-        ResourceID bufferID = event.distinguisher() == Distinguisher.C2 ? ResourceID.BUFFER_3 : ResourceID.BUFFER_5;
         if (event.eventType() == EventType.ARRIVAL) {
-            return Optional.of(new Event(event.time() + generator.nextInt(MAX_DELAY), EventType.DEPARTURE, ComponentID.INSPECTOR_2, Set.of(bufferID), Set.of(ResourceID.INSPECTOR_2), event.distinguisher()));
+            return Optional.of(new Event(event.time() + generator.nextInt(MAX_DELAY), EventType.DEPARTURE, ComponentID.INSPECTOR_2, Set.of(ResourceID.BUFFER_3), Set.of(ResourceID.INSPECTOR_2), Distinguisher.C2));
         }
-        ComponentID nextComponentID = event.distinguisher() == Distinguisher.C2 ? ComponentID.WORKSTATION_2 : ComponentID.WORKSTATION_3;
-        return Optional.of(new Event(event.time(), EventType.ARRIVAL, nextComponentID, Set.of(nextComponentID.getResourceID()), Set.of(bufferID), event.distinguisher()));
+        return Optional.of(new Event(event.time(), EventType.ARRIVAL, ComponentID.WORKSTATION_2, Set.of(ResourceID.WORKSTATION_2), Set.of(ResourceID.BUFFER_3), Distinguisher.C2));
     }
 }

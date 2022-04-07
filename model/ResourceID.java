@@ -3,6 +3,7 @@ package model;
 public enum ResourceID {
     INSPECTOR_1,
     INSPECTOR_2,
+    INSPECTOR_3,
     WORKSTATION_1,
     WORKSTATION_2,
     WORKSTATION_3,

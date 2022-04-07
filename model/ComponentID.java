@@ -25,6 +25,17 @@ public enum ComponentID {
             return WORKSTATIONS.contains(componentID) ? 1 : 0;
         }
     },
+    INSPECTOR_3 {
+        @Override
+        public ResourceID getResourceID() {
+            return ResourceID.INSPECTOR_3;
+        }
+
+        @Override
+        public int processBefore(ComponentID componentID) {
+            return WORKSTATIONS.contains(componentID) ? 1 : 0;
+        }
+    },
     WORKSTATION_1 {
         @Override
         public ResourceID getResourceID() {
@@ -58,7 +69,7 @@ public enum ComponentID {
             return INSPECTORS.contains(componentID) ? -1 : 0;
         }
     };
-    public static final Set<ComponentID> INSPECTORS = Set.of(INSPECTOR_1, INSPECTOR_2);
+    public static final Set<ComponentID> INSPECTORS = Set.of(INSPECTOR_1, INSPECTOR_2, INSPECTOR_3);
     public static final Set<ComponentID> WORKSTATIONS = Set.of(WORKSTATION_1, WORKSTATION_2, WORKSTATION_3);
 
     public ResourceID getResourceID() {
